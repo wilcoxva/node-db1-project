@@ -4,10 +4,10 @@ const db = require('./data/dbConfig');
 
 const router = express.Router();
 
-router.get('', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
     try {
-        await db.select("*").from("budget")
-        res.json(budget)
+        const accounts = await db.select("*").from("accounts")
+        res.json(accounts)
     } catch (err) {
         next(err)
     }
@@ -15,22 +15,22 @@ router.get('', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
     try {
-        const account = await db("budget").first("*").where("id", req.params.id)
+        const account = await db("accounts").first("*").where("id", req.params.id)
         res.json(account)
     } catch (err) {
         next(err)
     }
 })
 
-router.post('', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
     try {
         const payload = {
             name: req.body.name,
             budget: req.body.budget,
         }
 
-        const [id] = await db("budget").insert(payload)
-        const account = await db("budget").where("id", id).first()
+        const [id] = await db("accounts").insert(payload)
+        const account = await db("accounts").where("id", id).first()
 
         res.json(account)
     } catch (err) {
@@ -45,8 +45,8 @@ router.put('/:id', async (req, res, next) => {
             budget: req.body.budget,
         }
 
-        await db("budget").where("id", req.params.id).update(payload)
-        const updatedAccount = await db("budget").where("id", req.params.id).first()
+        await db("accounts").where("id", req.params.id).update(payload)
+        const updatedAccount = await db("accounts").where("id", req.params.id).first()
 
         res.json(updatedAccount)
     } catch (err) {
@@ -56,9 +56,11 @@ router.put('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
     try {
-        await db("budget").where("id", req.params.id).del()
+        await db("accounts").where("id", req.params.id).del()
         res.status(204).end()
     } catch (err) {
         next(err)
     }
 })
+
+module.exports = router
